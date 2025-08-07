@@ -28,10 +28,9 @@ urlpatterns = [
     # Search
     path('search/', views.event_search, name='event_search'),
 
-    path('participants/', views.participant_list, name='participant_list'),
-    path('participants/create/', views.participant_create, name='participant_create'),
-    path('participants/edit/<int:pk>/', views.participant_update, name='participant_edit'),
-    path('participants/delete/<int:pk>/', views.participant_delete, name='participant_delete'),
+    # RSVP
+    path('rsvp/<int:event_id>/', views.rsvp_event, name='rsvp_event'),
 
-
+    # Optional: If you have a home view, define it on a different route
+    # path('home/', views.home, name='home'),  # Not using as homepage now
 ]
