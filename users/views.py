@@ -1,63 +1,35 @@
-# users/views.py
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.core.mail import send_mail
-from django.conf import settings
-from django.http import HttpResponse
-from django.contrib.auth.models import Group
-from django.contrib.auth import login
-from .forms import SignupForm
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.views import PasswordChangeView, PasswordResetView, PasswordResetConfirmView
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import CustomUser
+from .forms import CustomUserChangeForm
 
-def signup_view(request):
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])  # Password set
-            user.is_active = False
-            user.save()
-            group = Group.objects.get(name='Participant')
-            user.groups.add(group)
+class ProfileView(LoginRequiredMixin, DetailView):
+    model = CustomUser
+    template_name = "users/profile.html"
 
-            token = default_token_generator.make_token(user)
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            domain = get_current_site(request).domain
-            link = f"http://{domain}/users/activate/{uid}/{token}/"
+    def get_object(self):
+        return self.request.user
 
-            subject = "Activate your account"
-            message = f"Hi {user.username}, click the link to activate your account: {link}"
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+class EditProfileView(LoginRequiredMixin, UpdateView):
+    model = CustomUser
+    form_class = CustomUserChangeForm
+    template_name = "users/edit_profile.html"
+    success_url = reverse_lazy("profile")
 
-            return HttpResponse("Check your email to activate your account.")
-    else:
-        form = SignupForm()
-    return render(request, 'users/signup.html', {'form': form})
+    def get_object(self):
+        return self.request.user
 
-def activate_user(request, uidb64, token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except Exception:
-        user = None
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = "users/change_password.html"
+    success_url = reverse_lazy("profile")
 
-    if user and default_token_generator.check_token(user, token):
-        user.is_active = True
-        user.save()
-        login(request, user)
-        return redirect('dashboard_redirect')
-    return HttpResponse("Activation link is invalid!")
-#organizer checker function
-def is_organizer(user):
-    return user.groups.filter(name='Organizer').exists()
+class CustomPasswordResetView(PasswordResetView):
+    template_name = "users/password_reset.html"
+    email_template_name = "users/password_reset_email.html"
+    success_url = reverse_lazy("login")
 
-@login_required
-@user_passes_test(is_organizer)
-def organizer_dashboard(request):
-    return render(request, 'users/organizer_dashboard.html')
-
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = "users/password_reset_confirm.html"
+    success_url = reverse_lazy("login")
