@@ -1,13 +1,12 @@
-{% extends 'tasks/base.html' %}
-{% block title %}Participants{% endblock %}
+{% extends "tasks/base.html" %}
+{% block title %}Participant Form{% endblock %}
+
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">Participants</h1>
-<ul>
-    {% for participant in participants %}
-    <li class="p-2 border bg-white rounded mb-2">{{ participant.name }} - {{ participant.email
-    }}</li>
-    {% empty %}
-    <li>No participants yet.</li>
-    {% endfor %}
-</ul>
+<h1 class="text-2xl font-bold mb-4">{% if form.instance.pk %}Edit Participant{% else %}Create Participant{% endif %}</h1>
+<form method="post" class="bg-white p-6 rounded shadow max-w-lg">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-3">Save</button>
+    <a href="{% url 'participant_list' %}" class="ml-3 text-gray-600 hover:underline">Cancel</a>
+</form>
 {% endblock %}
