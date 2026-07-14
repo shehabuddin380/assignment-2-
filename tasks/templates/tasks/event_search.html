@@ -1,0 +1,18 @@
+{% extends "tasks/base.html" %}
+{% block title %}Search Events{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Search Events</h1>
+<form method="get" class="mb-4">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search by name or location" class="border rounded px-3 py-2 w-full max-w-md">
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Search</button>
+</form>
+
+<ul class="bg-white rounded shadow divide-y">
+    {% for event in events %}
+    <li class="p-4">{{ event.name }} — {{ event.date }} — {{ event.location }}</li>
+    {% empty %}
+    <li class="p-4 text-gray-500">No results.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
