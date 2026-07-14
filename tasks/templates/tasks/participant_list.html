@@ -1,12 +1,26 @@
 {% extends "tasks/base.html" %}
-{% block title %}Participant Form{% endblock %}
+{% block title %}Participants{% endblock %}
 
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">{% if form.instance.pk %}Edit Participant{% else %}Create Participant{% endif %}</h1>
-<form method="post" class="bg-white p-6 rounded shadow max-w-lg">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-3">Save</button>
-    <a href="{% url 'participant_list' %}" class="ml-3 text-gray-600 hover:underline">Cancel</a>
-</form>
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">Participants</h1>
+    <a href="{% url 'participant_create' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ New Participant</a>
+</div>
+
+<ul class="bg-white rounded shadow divide-y">
+    {% for participant in participants %}
+    <li class="p-4 flex justify-between items-center">
+        <div>
+            <p class="font-semibold">{{ participant.name }}</p>
+            <p class="text-sm text-gray-600">{{ participant.email }}</p>
+        </div>
+        <div class="space-x-3">
+            <a href="{% url 'participant_edit' participant.pk %}" class="text-blue-600 hover:underline">Edit</a>
+            <a href="{% url 'participant_delete' participant.pk %}" class="text-red-600 hover:underline">Delete</a>
+        </div>
+    </li>
+    {% empty %}
+    <li class="p-4 text-gray-500">No participants yet.</li>
+    {% endfor %}
+</ul>
 {% endblock %}
