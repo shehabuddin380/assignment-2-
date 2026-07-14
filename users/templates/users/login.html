@@ -1,11 +1,11 @@
 {% extends 'tasks/base.html' %}
-{% block title %}Login{% endblock %}
+{% block title %}Signup{% endblock %}
 {% block content %}
-<h2>Login</h2>
-<form method="post">
+<h2>Signup</h2>
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Login</button>
+    <button type="submit">Signup</button>
 </form>
-<p>Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+<p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
 {% endblock %}
