@@ -1,19 +1,26 @@
-{% extends 'tasks/base.html' %}
+{% extends "tasks/base.html" %}
 {% block title %}Dashboard{% endblock %}
+
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">Organizer Dashboard</h1>
-<div class="grid grid-cols-2 gap-4 mb-6">
-    <div class="bg-white p-4 shadow rounded">Total Events: {{ total_events }}</div>
-    <div class="bg-white p-4 shadow rounded">Total Participants: {{ total_participants }}</div>
-    <div class="bg-white p-4 shadow rounded">Upcoming Events: {{ upcoming_events }}</div>
-    <div class="bg-white p-4 shadow rounded">Past Events: {{ past_events }}</div>
+<h1 class="text-2xl font-bold mb-4">Dashboard</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-white p-4 rounded shadow">
+        <p class="text-sm text-gray-600">Total Events</p>
+        <p class="text-3xl font-bold">{{ total_events }}</p>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+        <p class="text-sm text-gray-600">Total Participants</p>
+        <p class="text-3xl font-bold">{{ total_participants }}</p>
+    </div>
 </div>
-<h2 class="text-xl font-semibold mb-2">Today's Events</h2>
-<ul>
-    {% for event in todays_events %}
-    <li class="p-2 border bg-white rounded mb-2">{{ event.name }} at {{ event.time }}</li>
+
+<h2 class="text-xl font-semibold mb-2">Upcoming Events</h2>
+<ul class="bg-white rounded shadow divide-y">
+    {% for event in upcoming_events %}
+    <li class="p-4">{{ event.name }} — {{ event.date }}</li>
     {% empty %}
-    <li>No events today.</li>
+    <li class="p-4 text-gray-500">No upcoming events.</li>
     {% endfor %}
 </ul>
 {% endblock %}
