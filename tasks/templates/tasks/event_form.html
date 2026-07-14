@@ -1,22 +1,13 @@
-{% extends 'tasks/base.html' %}
+{% extends "tasks/base.html" %}
+{% block title %}Event Form{% endblock %}
+
 {% block content %}
-<h2>Event List</h2>
-{% for event in events %}
-  <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-    <h3>{{ event.name }}</h3>
-    <p>{{ event.description }}</p>
-    <p><strong>Date:</strong> {{ event.date }}</p>
-    <p><strong>Location:</strong> {{ event.location }}</p>
-    <img src="{{ event.image.url }}" width="250"><br>
-    {% if user.is_authenticated %}
-      {% if user in event.rsvp_users.all %}
-        <p>✅ You already RSVP'd</p>
-      {% else %}
-        <a href="{% url 'rsvp_event' event.id %}">RSVP</a>
-      {% endif %}
-    {% else %}
-      <p><a href="{% url 'login' %}">Login</a> to RSVP</p>
-    {% endif %}
-  </div>
-{% endfor %}
+<h1 class="text-2xl font-bold mb-4">{% if form.instance.pk %}Edit Event{% else %}Create Event{% endif %}</h1>
+
+<form method="post" enctype="multipart/form-data" class="bg-white p-6 rounded shadow max-w-lg">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-3">Save</button>
+    <a href="{% url 'event_list' %}" class="ml-3 text-gray-600 hover:underline">Cancel</a>
+</form>
 {% endblock %}
