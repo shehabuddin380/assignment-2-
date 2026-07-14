@@ -1,0 +1,20 @@
+{% extends 'tasks/base.html' %}
+{% block title %}Events{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Events</h1>
+<form method="get" class="mb-4">
+    <input type="text" name="q" placeholder="Search by name or location" value="{{ search }}"
+class="p-2 border rounded w-1/3">
+    <button class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
+</form>
+<ul>
+    {% for event in events %}
+    <li class="mb-2 p-4 border bg-white rounded shadow">
+        <strong>{{ event.name }}</strong> - {{ event.category.name }}<br>
+        Participants: {{ event.participants.count }}
+    </li>
+    {% empty %}
+    <li>No events found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
