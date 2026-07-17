@@ -6,13 +6,12 @@ from .models import Event, Category, Participant
 from .forms import EventForm, CategoryForm, ParticipantForm
 
 
-# ---------- Event CRUD ----------
-
 def event_list(request):
     events = Event.objects.all().order_by('date')
     return render(request, 'tasks/event_list.html', {'events': events})
 
 
+@login_required
 def event_create(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
@@ -25,6 +24,7 @@ def event_create(request):
     return render(request, 'tasks/event_form.html', {'form': form})
 
 
+@login_required
 def event_update(request, pk):
     event = get_object_or_404(Event, pk=pk)
     if request.method == 'POST':
@@ -38,6 +38,7 @@ def event_update(request, pk):
     return render(request, 'tasks/event_form.html', {'form': form})
 
 
+@login_required
 def event_delete(request, pk):
     event = get_object_or_404(Event, pk=pk)
     if request.method == 'POST':
@@ -47,13 +48,12 @@ def event_delete(request, pk):
     return render(request, 'tasks/event_confirm_delete.html', {'event': event})
 
 
-# ---------- Category CRUD ----------
-
 def category_list(request):
     categories = Category.objects.all()
     return render(request, 'tasks/category_list.html', {'categories': categories})
 
 
+@login_required
 def category_create(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -65,6 +65,7 @@ def category_create(request):
     return render(request, 'tasks/category_form.html', {'form': form})
 
 
+@login_required
 def category_update(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
@@ -77,6 +78,7 @@ def category_update(request, pk):
     return render(request, 'tasks/category_form.html', {'form': form})
 
 
+@login_required
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
@@ -85,13 +87,12 @@ def category_delete(request, pk):
     return render(request, 'tasks/category_confirm_delete.html', {'category': category})
 
 
-# ---------- Participant CRUD ----------
-
 def participant_list(request):
     participants = Participant.objects.all()
     return render(request, 'tasks/participant_list.html', {'participants': participants})
 
 
+@login_required
 def participant_create(request):
     if request.method == 'POST':
         form = ParticipantForm(request.POST)
@@ -103,6 +104,7 @@ def participant_create(request):
     return render(request, 'tasks/participant_form.html', {'form': form})
 
 
+@login_required
 def participant_update(request, pk):
     participant = get_object_or_404(Participant, pk=pk)
     if request.method == 'POST':
@@ -115,6 +117,7 @@ def participant_update(request, pk):
     return render(request, 'tasks/participant_form.html', {'form': form})
 
 
+@login_required
 def participant_delete(request, pk):
     participant = get_object_or_404(Participant, pk=pk)
     if request.method == 'POST':
@@ -122,8 +125,6 @@ def participant_delete(request, pk):
         return redirect('participant_list')
     return render(request, 'tasks/participant_confirm_delete.html', {'participant': participant})
 
-
-# ---------- Dashboard ----------
 
 @login_required
 def dashboard(request):
@@ -138,8 +139,6 @@ def dashboard(request):
     return render(request, 'tasks/dashboard.html', context)
 
 
-# ---------- Search ----------
-
 def event_search(request):
     query = request.GET.get('q', '')
     events = Event.objects.filter(
@@ -147,8 +146,6 @@ def event_search(request):
     ) if query else Event.objects.none()
     return render(request, 'tasks/event_search.html', {'events': events, 'query': query})
 
-
-# ---------- RSVP ----------
 
 @login_required
 def rsvp_event(request, event_id):
