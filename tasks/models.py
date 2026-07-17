@@ -9,7 +9,7 @@ class Category(models.Model):
         verbose_name_plural = "Categories"
 
     def __str__(self):
-        return self.namee
+        return self.name
 
 class Event(models.Model):
     name = models.CharField(max_length=200)
@@ -31,4 +31,3 @@ class Participant(models.Model):
 
     def __str__(self):
         return self.name
-    
