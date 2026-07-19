@@ -29,6 +29,9 @@ def event_create(request):
 @login_required
 def event_update(request, pk):
     event = get_object_or_404(Event, pk=pk)
+    if event.created_by and event.created_by != request.user:
+        messages.error(request, "You are not allowed to edit this event.")
+        return redirect('event_list')
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES, instance=event)
         if form.is_valid():
@@ -38,7 +41,6 @@ def event_update(request, pk):
     else:
         form = EventForm(instance=event)
     return render(request, 'tasks/event_form.html', {'form': form})
-
 
 @login_required
 def event_delete(request, pk):
