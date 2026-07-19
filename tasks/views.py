@@ -45,12 +45,14 @@ def event_update(request, pk):
 @login_required
 def event_delete(request, pk):
     event = get_object_or_404(Event, pk=pk)
+    if event.created_by and event.created_by != request.user:
+        messages.error(request, "You are not allowed to delete this event.")
+        return redirect('event_list')
     if request.method == 'POST':
         event.delete()
         messages.success(request, "Event deleted.")
         return redirect('event_list')
     return render(request, 'tasks/event_confirm_delete.html', {'event': event})
-
 
 def category_list(request):
     categories = Category.objects.all()
