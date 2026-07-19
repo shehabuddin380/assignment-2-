@@ -16,13 +16,15 @@ def event_create(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            event = form.save(commit=False)
+            event.created_by = request.user
+            event.save()
+            form.save_m2m()
             messages.success(request, "Event created successfully.")
             return redirect('event_list')
     else:
         form = EventForm()
     return render(request, 'tasks/event_form.html', {'form': form})
-
 
 @login_required
 def event_update(request, pk):
