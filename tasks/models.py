@@ -20,6 +20,10 @@ class Event(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='events')
     image = models.ImageField(upload_to='event_images/', default='default.jpg', blank=True)
     rsvp_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='rsvped_events', blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='created_events'
+    )
 
     def __str__(self):
         return self.name
